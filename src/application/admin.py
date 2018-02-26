@@ -4,4 +4,5 @@ from application import models
 
 @admin.register(models.APP)
 class APPAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'client_id']
+    list_display_links = ('client_id',)
