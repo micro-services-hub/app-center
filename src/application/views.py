@@ -6,9 +6,11 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from application import models
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 
 @require_http_methods(['POST', ])
+@csrf_exempt
 def create_token(request):
     key = settings.PRIV_KEY
     try:
@@ -30,16 +32,17 @@ def create_token(request):
                  'iat': now,
                  'exp': now + 3600 * 24}
         token = jwt.encode(token, key, algorithm='RS512')
-        return JsonResponse({'access_token': token})
+        return JsonResponse({'access_token': token.decode('utf-8')})
     except Exception as e:
         return HttpResponse(content=bytes(e), status=400)
 
 
 @require_http_methods(['POST', ])
+@csrf_exempt
 def verify_token(request):
     key = settings.PUB_KEY
     try:
-        body = json.load(request.body)
+        body = json.loads(request.body.decode('utf-8'))
         token = body['access_token']
         audience = body.get('audience', '')
         return JsonResponse(jwt.decode(token, key, audience=audience))

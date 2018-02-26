@@ -113,3 +113,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# application settings
+with open(os.path.join(CONF_DIR, 'x509', 'pubkey.pem')) as f:
+    PUB_KEY = f.read()
+
+with open(os.path.join(CONF_DIR, 'x509', 'privkey.pem')) as f:
+    PRIV_KEY = f.read()
